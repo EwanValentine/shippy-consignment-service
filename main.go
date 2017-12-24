@@ -7,12 +7,13 @@ import (
 	"fmt"
 	"log"
 
-	"golang.org/x/net/context"
 	"os"
 
+	"golang.org/x/net/context"
+
+	userService "github.com/EwanValentine/shippy-user-service/proto/user"
+	vesselProto "github.com/EwanValentine/shippy-vessel-service/proto/vessel"
 	pb "github.com/EwanValentine/shippy/consignment-service/proto/consignment"
-	userService "github.com/EwanValentine/shippy/user-service/proto/user"
-	vesselProto "github.com/EwanValentine/shippy/vessel-service/proto/vessel"
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/client"
 	"github.com/micro/go-micro/metadata"
