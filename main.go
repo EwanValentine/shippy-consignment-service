@@ -69,18 +69,29 @@ func main() {
 	}
 }
 
+// AuthWrapper is a high-order function which takes a HandlerFunc
+// and returns a function, which takes a context, request and response interface.
+// The token is extracted from the context set in our consignment-cli, that
+// token is then sent over to the user service to be validated.
+// If valid, the call is passed along to the handler. If not,
+// an error is returned.
 func AuthWrapper(fn server.HandlerFunc) server.HandlerFunc {
 	return func(ctx context.Context, req server.Request, resp interface{}) error {
+		if os.Getenv("DISABLE_AUTH") == "true" {
+			return fn(ctx, req, resp)
+		}
 		meta, ok := metadata.FromContext(ctx)
 		if !ok {
 			return errors.New("no auth meta-data found in request")
 		}
+
+		// Note this is now uppercase (not entirely sure why this is...)
 		token := meta["Token"]
 		log.Println("Authenticating with token: ", token)
 
 		// Auth here
 		authClient := userService.NewUserServiceClient("go.micro.srv.user", client.DefaultClient)
-		_, err := authClient.ValidateToken(context.Background(), &userService.Token{
+		_, err := authClient.ValidateToken(ctx, &userService.Token{
 			Token: token,
 		})
 		if err != nil {
