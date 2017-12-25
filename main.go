@@ -75,8 +75,9 @@ func AuthWrapper(fn server.HandlerFunc) server.HandlerFunc {
 		if !ok {
 			return errors.New("no auth meta-data found in request")
 		}
-		token := meta["token"]
+		token := meta["Token"]
 		log.Println("Authenticating with token: ", token)
+
 		// Auth here
 		authClient := userService.NewUserServiceClient("go.micro.srv.user", client.DefaultClient)
 		_, err := authClient.ValidateToken(context.Background(), &userService.Token{
