@@ -1,14 +1,14 @@
 // consignment-service/proto/consignment/consignment.proto
 syntax = "proto3";
 
-package go.micro.srv.consignment;
+package consignment;
 
-service ShippingService {
-  rpc CreateConsignment(Consignment) returns (Response) {}
-  rpc GetConsignments(GetRequest) returns (Response) {}
+service Consignment {
+  rpc Create(Manifest) returns (Response) {}
+  rpc Get(GetRequest) returns (Response) {}
 }
 
-message Consignment {
+message Manifest {
   string id = 1;
   string description = 2;
   int32 weight = 3;
@@ -28,6 +28,6 @@ message GetRequest {}
 
 message Response {
   bool created = 1;
-  Consignment consignment = 2;
-  repeated Consignment consignments = 3;
+  Manifest manifest = 2;
+  repeated Manifest manifests = 3;
 }

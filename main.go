@@ -12,7 +12,7 @@ import (
 	"golang.org/x/net/context"
 
 	pb "github.com/EwanValentine/shippy-consignment-service/proto/consignment"
-	userService "github.com/EwanValentine/shippy-user-service/proto/user"
+	userService "github.com/EwanValentine/shippy-user-service/proto/auth"
 	vesselProto "github.com/EwanValentine/shippy-vessel-service/proto/vessel"
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/client"
@@ -61,7 +61,7 @@ func main() {
 	srv.Init()
 
 	// Register handler
-	pb.RegisterShippingServiceHandler(srv.Server(), &service{session, vesselClient})
+	pb.RegisterShippingHandler(srv.Server(), &service{session, vesselClient})
 
 	// Run the server
 	if err := srv.Run(); err != nil {
@@ -90,7 +90,7 @@ func AuthWrapper(fn server.HandlerFunc) server.HandlerFunc {
 		log.Println("Authenticating with token: ", token)
 
 		// Auth here
-		authClient := userService.NewUserServiceClient("go.micro.srv.user", client.DefaultClient)
+		authClient := userService.NewAuthClient("go.micro.srv.user", client.DefaultClient)
 		_, err := authClient.ValidateToken(ctx, &userService.Token{
 			Token: token,
 		})

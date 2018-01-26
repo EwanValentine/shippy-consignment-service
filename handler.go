@@ -25,9 +25,11 @@ func (s *service) GetRepo() Repository {
 // CreateConsignment - we created just one method on our service,
 // which is a create method, which takes a context and a request as an
 // argument, these are handled by the gRPC server.
-func (s *service) CreateConsignment(ctx context.Context, req *pb.Consignment, res *pb.Response) error {
+func (s *service) Create(ctx context.Context, req *pb.Manifest, res *pb.Response) error {
 	repo := s.GetRepo()
 	defer repo.Close()
+
+	log.Println("Creating: ", req)
 
 	// Here we call a client instance of our vessel service with our consignment weight,
 	// and the amount of containers as the capacity value
@@ -53,11 +55,11 @@ func (s *service) CreateConsignment(ctx context.Context, req *pb.Consignment, re
 	// Return matching the `Response` message we created in our
 	// protobuf definition.
 	res.Created = true
-	res.Consignment = req
+	res.Manifest = req
 	return nil
 }
 
-func (s *service) GetConsignments(ctx context.Context, req *pb.GetRequest, res *pb.Response) error {
+func (s *service) Get(ctx context.Context, req *pb.GetRequest, res *pb.Response) error {
 	repo := s.GetRepo()
 	defer repo.Close()
 
@@ -65,6 +67,6 @@ func (s *service) GetConsignments(ctx context.Context, req *pb.GetRequest, res *
 	if err != nil {
 		return err
 	}
-	res.Consignments = consignments
+	res.Manifests = manifests
 	return nil
 }

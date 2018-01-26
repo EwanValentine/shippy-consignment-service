@@ -8,4 +8,5 @@ run:
 		-p 50052 \
 		-e MICRO_SERVER_ADDRESS=:50052 \
 		-e MICRO_REGISTRY=mdns \
+		-e DISABLE_AUTH=true \
 		consignment-service
