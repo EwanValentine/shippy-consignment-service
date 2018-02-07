@@ -37,10 +37,10 @@ func (s *service) Create(ctx context.Context, req *pb.Consignment, res *pb.Respo
 		MaxWeight: req.Weight,
 		Capacity:  int32(len(req.Containers)),
 	})
-	log.Printf("Found vessel: %s \n", vesselResponse.Vessel.Name)
 	if err != nil {
 		return err
 	}
+	log.Printf("Found vessel: %s \n", vesselResponse.Vessel.Name)
 
 	// We set the VesselId as the vessel we got back from our
 	// vessel service
