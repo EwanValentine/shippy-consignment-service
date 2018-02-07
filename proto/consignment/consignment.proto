@@ -3,12 +3,12 @@ syntax = "proto3";
 
 package consignment;
 
-service Consignment {
-  rpc Create(Manifest) returns (Response) {}
+service ConsignmentService {
+  rpc Create(Consignment) returns (Response) {}
   rpc Get(GetRequest) returns (Response) {}
 }
 
-message Manifest {
+message Consignment {
   string id = 1;
   string description = 2;
   int32 weight = 3;
@@ -28,6 +28,6 @@ message GetRequest {}
 
 message Response {
   bool created = 1;
-  Manifest manifest = 2;
-  repeated Manifest manifests = 3;
+  Consignment consignment = 2;
+  repeated Consignment consignments = 3;
 }

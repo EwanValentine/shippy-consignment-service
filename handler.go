@@ -25,7 +25,7 @@ func (s *service) GetRepo() Repository {
 // CreateConsignment - we created just one method on our service,
 // which is a create method, which takes a context and a request as an
 // argument, these are handled by the gRPC server.
-func (s *service) Create(ctx context.Context, req *pb.Manifest, res *pb.Response) error {
+func (s *service) Create(ctx context.Context, req *pb.Consignment, res *pb.Response) error {
 	repo := s.GetRepo()
 	defer repo.Close()
 
@@ -55,7 +55,7 @@ func (s *service) Create(ctx context.Context, req *pb.Manifest, res *pb.Response
 	// Return matching the `Response` message we created in our
 	// protobuf definition.
 	res.Created = true
-	res.Manifest = req
+	res.Consignment = req
 	return nil
 }
 
@@ -67,6 +67,6 @@ func (s *service) Get(ctx context.Context, req *pb.GetRequest, res *pb.Response)
 	if err != nil {
 		return err
 	}
-	res.Manifests = manifests
+	res.Consignments = consignments
 	return nil
 }

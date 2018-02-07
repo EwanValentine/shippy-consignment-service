@@ -50,18 +50,18 @@ func main() {
 	srv := micro.NewService(
 
 		// This name must match the package name given in your protobuf definition
-		micro.Name("go.micro.srv.consignment"),
+		micro.Name("shippy.consignment"),
 		micro.Version("latest"),
 		micro.WrapHandler(AuthWrapper),
 	)
 
-	vesselClient := vesselProto.NewVesselServiceClient("go.micro.srv.vessel", srv.Client())
+	vesselClient := vesselProto.NewVesselServiceClient("shippy.vessel", srv.Client())
 
 	// Init will parse the command line flags.
 	srv.Init()
 
 	// Register handler
-	pb.RegisterShippingHandler(srv.Server(), &service{session, vesselClient})
+	pb.RegisterConsignmentServiceHandler(srv.Server(), &service{session, vesselClient})
 
 	// Run the server
 	if err := srv.Run(); err != nil {
@@ -90,7 +90,7 @@ func AuthWrapper(fn server.HandlerFunc) server.HandlerFunc {
 		log.Println("Authenticating with token: ", token)
 
 		// Auth here
-		authClient := userService.NewAuthClient("go.micro.srv.user", client.DefaultClient)
+		authClient := userService.NewAuthClient("shippy.user", client.DefaultClient)
 		_, err := authClient.ValidateToken(ctx, &userService.Token{
 			Token: token,
 		})

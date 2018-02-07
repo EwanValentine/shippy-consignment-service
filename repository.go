@@ -21,8 +21,8 @@ type ConsignmentRepository struct {
 }
 
 // Create a new consignment
-func (repo *ConsignmentRepository) Create(manifest *pb.Manifest) error {
-	return repo.collection().Insert(manifest)
+func (repo *ConsignmentRepository) Create(consignment *pb.Consignment) error {
+	return repo.collection().Insert(consignment)
 }
 
 // GetAll consignments
