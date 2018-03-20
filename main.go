@@ -91,6 +91,8 @@ func AuthWrapper(fn server.HandlerFunc) server.HandlerFunc {
 		log.Println("Authenticating with token: ", token)
 
 		// Auth here
+		// Not sure if we should be using client.DefaultClient here?
+		// Should be srv.Client(), but we can't access that here?
 		authClient := userService.NewAuthClient("shippy.user", client.DefaultClient)
 		_, err := authClient.ValidateToken(ctx, &userService.Token{
 			Token: token,
