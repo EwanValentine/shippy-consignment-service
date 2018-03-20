@@ -15,7 +15,6 @@ import (
 	userService "github.com/EwanValentine/shippy-user-service/proto/auth"
 	vesselProto "github.com/EwanValentine/shippy-vessel-service/proto/vessel"
 	"github.com/micro/go-micro"
-	"github.com/micro/go-micro/client"
 	"github.com/micro/go-micro/metadata"
 	"github.com/micro/go-micro/server"
 	k8s "github.com/micro/kubernetes/go/micro"
@@ -23,6 +22,10 @@ import (
 
 const (
 	defaultHost = "localhost:27017"
+)
+
+var (
+	srv micro.Service
 )
 
 func main() {
@@ -48,7 +51,7 @@ func main() {
 	}
 
 	// Create a new service. Optionally include some options here.
-	srv := k8s.NewService(
+	srv = k8s.NewService(
 
 		// This name must match the package name given in your protobuf definition
 		micro.Name("shippy.consignment"),
@@ -91,9 +94,9 @@ func AuthWrapper(fn server.HandlerFunc) server.HandlerFunc {
 		log.Println("Authenticating with token: ", token)
 
 		// Auth here
-		// Not sure if we should be using client.DefaultClient here?
-		// Should be srv.Client(), but we can't access that here?
-		authClient := userService.NewAuthClient("shippy.user", client.DefaultClient)
+		// Really shouldn't be using a global here, find a better way
+		// of doing this, since you can't pass it into a wrapper.
+		authClient := userService.NewAuthClient("shippy.user", srv.Client())
 		_, err := authClient.ValidateToken(ctx, &userService.Token{
 			Token: token,
 		})
