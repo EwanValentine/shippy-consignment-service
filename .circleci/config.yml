@@ -1,0 +1,31 @@
+version: 2
+jobs:
+  build:
+    working_directory: /app
+    docker:
+      - image: ewanvalentine/gcdeploy:latest
+        environment:
+          GCLOUD_PROJECT_NAME: shippy-freight
+          GCLOUD_CLUSTER_NAME: shippy-freight-cluster
+          CLOUDSDK_COMPUTE_ZONE: europe-west2-a
+          GOOGLE_APPLICATION_CREDENTIALS: ${HOME}/gcloud-service-key.json
+      - image: docker:17.05.0-ce-git
+        environment:
+          DOCKER_TAG_PREFIX: "eu.gcr.io/$GCLOUD_PROJECT_NAME/shippy-consignment-service"
+          DOCKER_TAG: "$DOCKER_TAG_PREFIX:$CIRCLE_SHA1"
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Install dependencies
+          command: |
+            echo $GCLOUD_SERVICE_KEY | base64 --decode -i > ${HOME}/gcloud-service-key.json && \
+              gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json && \
+              gcloud config set project $GCLOUD_PROJECT_NAME && \
+              gcloud --quiet config set container/cluster $GCLOUD_CLUSTER_NAME && \
+              gcloud config set compute/zone ${CLOUDSDK_COMPUTE_ZONE} && \
+              gcloud --quiet container clusters get-credentials $GCLOUD_CLUSTER_NAME
+      - deploy:
+          name: Push application Docker image
+          command: |
+            make deploy
