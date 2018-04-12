@@ -14,7 +14,7 @@ spec:
     spec:
         containers:
         - name: consignment-service
-          image: eu.gcr.io/shippy-freight/consignment:latest
+          image: ewanvalentine/consignment:latest
           imagePullPolicy: Always
           command: [
             "./shippy-consignment-service",
@@ -25,7 +25,7 @@ spec:
           - name: DB_HOST
             value: "mongo:27017"
           - name: UPDATED_AT
-            value: "Tue 20 Mar 2018 08:45:28 GMT"
+            value: "Tue 20 Mar 2018 13:58:08 GMT"
           ports:
           - containerPort: 8080
             name: cons-port

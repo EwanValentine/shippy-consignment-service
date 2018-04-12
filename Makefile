@@ -1,8 +1,8 @@
 build:
 	protoc -I. --go_out=plugins=micro:. \
 		proto/consignment/consignment.proto
-	docker build -t eu.gcr.io/shippy-freight/consignment:latest .
-	docker push eu.gcr.io/shippy-freight/consignment:latest
+	docker build -t ewanvalentine/consignment:latest .
+	docker push ewanvalentine/consignment:latest
 
 run:
 	docker run -d --net="host" \
