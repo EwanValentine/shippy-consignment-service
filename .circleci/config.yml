@@ -3,12 +3,29 @@ jobs:
   build:
     working_directory: /app
     docker:
+      # Here we select the Docker images we wish to use
+      # in order to build our service.
+      # We're using a container I made, which configurs the Google Cloud SDK
+      # Kubernetes, and a few other utils. This is open-source, and you can find
+      # the repo here https://github.com/EwanValentine/gcloud-docker-kubernetes 
+      #
+      # Then we're using the docker image itself, so that we can build docker containers.
       - image: ewanvalentine/gcdeploy:latest
         environment:
           GCLOUD_PROJECT_NAME: shippy-freight
           GCLOUD_CLUSTER_NAME: shippy-freight-cluster
           CLOUDSDK_COMPUTE_ZONE: europe-west2-a
+
+          # This is a google service key, which allows us to authenticate
+          # our build process with our cluster. 
+          # You need to generate a service key, such as the one we generated
+          # in part 7. You can copy the contents of this and encode it using base64.
+          # Then add the base64 string into your environment variables, in the settings
+          # of this build project. To find this, click on the spanner icon in your build.
+          # Then click on environment variables, click add variable, with the name GCLOUD_SERVICE_KEY
+          # then paste the base64 string of your service key into the value and save that.
           GOOGLE_APPLICATION_CREDENTIALS: ${HOME}/gcloud-service-key.json
+
       - image: docker:17.05.0-ce-git
         environment:
           DOCKER_TAG_PREFIX: "eu.gcr.io/$GCLOUD_PROJECT_NAME/shippy-consignment-service"
@@ -18,6 +35,10 @@ jobs:
       - setup_remote_docker
       - run:
           name: Install dependencies
+          
+          # Fetches the base64 encoded service key content, decodes it into a file again.
+          # Then sets the gcloud project name from the environment variables we set above.
+          # Then we set the cluster name, the compute region/zone, then fetch the credentials.
           command: |
             echo $GCLOUD_SERVICE_KEY | base64 --decode -i > ${HOME}/gcloud-service-key.json && \
               gcloud auth activate-service-account --key-file ${HOME}/gcloud-service-key.json && \
